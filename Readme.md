@@ -1,7 +1,7 @@
 #CUBES
 <!--Version Nov. 15th, 2018.-->
 
-**Codon Usage Bias Evolutionary Software** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of new genomes to the analysis following the phylogeny of the family/genus. Next, these Cn gene sets are used to calculate modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
+**Codon Usage Bias Evolutionary Scripts** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of new genomes to the analysis following the phylogeny of the family/genus. Next, these Cn gene sets are used to calculate modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
 
 The **pipeline**, is constituted by a set of bash and perl scripts which can be used to:
 
