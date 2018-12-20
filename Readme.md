@@ -1,7 +1,7 @@
-#Codon Usage Evolutionary Tools
+#CUBES
 <!--Version Nov. 15th, 2018.-->
 
-**Codon Usage Evolutionary Tools** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of new genomes to the analysis following the phylogeny of the family/genus. Next, these Cn gene sets are used to calculate modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
+**Codon Usage Bias Evolutionary Software** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of new genomes to the analysis following the phylogeny of the family/genus. Next, these Cn gene sets are used to calculate modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
 
 The **pipeline**, is constituted by a set of bash and perl scripts which can be used to:
 
@@ -13,7 +13,7 @@ The **pipeline**, is constituted by a set of bash and perl scripts which can be 
 6. Finally, two plots, one showing the change in the codon use frequencies (CUF) for each codon and the corresponding *w*, and the other, a histogram of the difference in CUF for the initial and the most ancestral cores and the putatively highly expressed genes (PHE) is created.
 ----------
 
-##Instalation
+##Installation
 
 For the correct function of the pipeline all the required software (see below) must be installed following the author instructions. For the correct function of the software, all the programs must be included in the linux $PATH.   
 
