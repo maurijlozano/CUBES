@@ -1,4 +1,4 @@
-CUBES
+# CUBES
 <!--Version Nov. 15th, 2018.-->
 
 **Codon Usage Bias Evolutionary Scripts** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of new genomes to the analysis following the phylogeny of the family/genus. Next, these Cn gene sets are used to calculate modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
@@ -13,17 +13,17 @@ The **pipeline**, is constituted by a set of bash and perl scripts which can be 
 6. Finally, two plots, one showing the change in the codon use frequencies (CUF) for each codon and the corresponding *w*, and the other, a histogram of the difference in CUF for the initial and the most ancestral cores and the putatively highly expressed genes (PHE) is created.
 ----------
 
-##Installation
+## Installation
 
 For the correct function of the pipeline all the required software (see below) must be installed following the author instructions. For the correct function of the software, all the programs must be included in the linux $PATH.   
 
-###Requirements
+### Requirements
 - The software needs G. Olsen software which can be found in [link](http://www.life.illinois.edu/gary/programs/codon_usage.html). The installation instructions are clearly provided by the author. The software must be in the linux $PATH to work correctly. 
 - a local installation of [codonw](http://codonw.sourceforge.net/).
 - [phylip](http://evolution.genetics.washington.edu/phylip.html) package for the tRNA tree generation.
 - [R-project] (https://www.r-project.org/) software with the following libraries: stringr, ggplot2, ggrepel, ggthemes, ggpmisc, data.table, tidyr, ggpubr, pheatmap, ape, tAI, doParallel, ade4. 
 
-##Running the pipeline - General comments
+## Running the pipeline - General comments
 The scripts are programmed to scan for a set of files for each bacteria. These files must be located on a folder within the installation path. An example of the correct folder architecture is shown below: 
 
 
@@ -41,7 +41,7 @@ The folder for each bacterial family must contain:
 
 The file format must be the same as in the example files. The order of the codons in rgf.txt, trna.txt must be respected.
 
-##Running the scripts in the correct order
+## Running the scripts in the correct order
 The pipeline contains scripts which generate files that can be required on following steps. It is therefore recommended to run the scripts in order.
 For the principal pipeline run `./calculate_ALL.sh -y` 
  
@@ -53,7 +53,7 @@ To run the first analysis use the following scripts:
 
 `./coa_GNM.sh` -> Calculates CA on RSCU, using CodonW software, and generates several plots in R. Requires single*.fa file, containing singleton gene CDS, and GNM.fa (complete genome CDS). Additionally, CA Axis are reoriented in the C1-Cn direction.
 
-####Additional scripts
+#### Additional scripts
 `./calculate_modals.sh` -> calculates modal codon use frequencies using G.Olsen software, and generates a representative DNA sequence  (uses seq2AvgAA.pl and modal2seq2.pl perl scripts). This script doesn't take account of amino-acid composition.
 
 `./coa.sh` -> Calculates CA on RSCU, using CodonW software, and generates several plots in R showing the evolutionary traits of codon bias.
@@ -73,10 +73,10 @@ To run the first analysis use the following scripts:
 
 `./GC3_Modal.sh` -> Calculates GC3 index using modal codon use frequencies and generates an average GC3*C1->n* vs evolutionary distances plot.
 
-####Summary images 1
+#### Summary images 1
 `./make_summary_images.sh` -> Makes summary images of the previous plots for rapid visual inspection of the results.
 
-###tRNA Adaptation Index (tAI) calculation
+### tRNA Adaptation Index (tAI) calculation
 A second step in the analysis is the calculation of the tRNA Adaptation Index. This index, defined by dos Reis M. (2004), and improved by Sabi *et al.* (2014).
  
 >The tRNA adaptation index (tAI) is a measure of the level of co-adaptation between the set of tRNA genes and the codon usage bias of protein-coding genes in a given genome. STOP and methionine codons are ignored. The standard genetic code is assumed. dos Reis. M. 2004.
@@ -90,7 +90,7 @@ The following scripts require:
 -tRNAs files (trna.txt, with two columns-> codon trna separated by "space character") with the number of copies of all the tRNAs present in the bacteria. This file must include all the 64 codons, STOPs too, as specified by dos Reis *et al.* 2004.
 -C1*.fa file containing CDS. 
 
-####Estimation of species *Sij*.
+#### Estimation of species *Sij*.
 
 `./calculate_sopt_DCBS_GNM_f.sh -y -i niter` -> Estimates *Sij* from the correlation between tAI and DCBS using the complete genome CDS. niter: number of random start points. 
 
@@ -98,12 +98,12 @@ The following scripts require:
 
 `./tAi_Modal_ws_St_Sdr.sh`-> Calculates tAI for modal sequences from single->Ci->Cj using the average *Sij* from Sabi and Tuller 2014, and generates a plot of tAI vs evolutionary distance.
 
-#####Other optional analysis
+##### Other optional analysis
 `./calculate_sopt_DCBS_GNM2_f.sh -y -i niter` -> Estimates *Sij* from the correlation between tAI and DCBS using the complete genome CDS. niter: number of random start points. Incorporates to tAI calculation the U:U wobble base interaction.
 
 `./tAi_Modal_g2.sh` -> Calculates tAI using Sopt-DCBS-GNM for modal sequences from Ci->Cj, and generates a plot of tAI vs evolutionary distance. Incorporates to tAI calculation the U:U wobble base interaction.
 
-######Some more...
+###### Some more...
 Estimation of *Sij* from tAI vs Nc-adjusted correlation
 `./calculate_sopt_folder.sh -y -i 100` -> Estimates *Sij* from the correlation between tAI and Nc-adjusted (DosReis).
 
@@ -119,11 +119,11 @@ Estimation of *Sij* from tAI vs DCBS using the C1 CDS
 `./tAi_Modal_Stuller_Sdosreis.sh` -> Calculates tAI for modal sequences from Ci->Cj using the average *Sij* from Sabi and Tuller 2014, and generates a plot of tAI vs evolutionary distance.
 
 
-#####tAI Summary images
+##### tAI Summary images
 `./make_tAi_images.sh` -> Makes tAI summary images for rapid visual inspection
 `./make_tAi_images2.sh` -> Makes tAI (U:U wobble base interaction) summary images for rapid visual inspection
 
-###tRNA copy number distance tree
+### tRNA copy number distance tree
 This script uses the tRNA copy number and distribution to calculate a distances tree, as in Novoa *et al.* 2012. Requires the Phylip package for NJ tree calculation.
 Requires:
 - a raw txt file containing the number of tRNA-copies for each codon and for all species (Required columns tab-separated: SP	Name GCA	GCG ...).
@@ -131,7 +131,7 @@ Requires:
 
 `calculate_tRNA_dist.sh tRNA_copy_file` -> Calculates a distance tree based on Novoa *et al.*
 
-###Heatmaps of codon usage from Ci->Cj->PHE and plots of frequencies of codon use vs evolutionary distance.
+### Heatmaps of codon usage from Ci->Cj->PHE and plots of frequencies of codon use vs evolutionary distance.
 The following scripts generate a series of plots for the observation of codon bias changes with evolutionary distance, for each codon.
 
 `./Cdelta_Heatmap2.sh` -> Heatmap of relative adaptiveness values (ws) and Delta C1->n
@@ -146,19 +146,19 @@ The following scripts generate a series of plots for the observation of codon bi
 
 `./Cdelta_plot_wt.sh` -> The same as Cdelta_plot.sh, but for *Sij* taken from Sabi *et al.* 2014.
 
-####Additional scripts
+#### Additional scripts
 `./Cdelta_Heatmap.sh` -> Generates a heatmap of Delta C1->n, PHE-RSCU, and tRNA copy number for each species. 
 
-##Accessory tools and files
+## Accessory tools and files
 
-###Bash scripts
+### Bash scripts
 `./calculate_fc_all_folder.sh` -> Calculates codon counts for all .fa files in different folders.
 `./calculate_fcounts_folder.sh` -> Calculates codon counts for all C1*.fa files in different folders.
 `./calculate_gfcounts_folder.sh` -> Calculates codon counts for all GNM.fa files in different folders.
 `./calculate_fmcounts_folder.sh` -> Calculates codon counts for modal sequences in different folders.
 `./calculate_DCBS_f.sh` -> Calculates the Directional Codon Bias for all .fa files in different folders.
 
-###Perl scripts
+### Perl scripts
 `./modal2seq2.pl` -> Calculates a coding sequence from the modal codon use calculated by G.Olsen software. Requires amino-acid composition file.
 `./modal2seq.pl` -> Calculates a coding sequence from the modal codon use calculated by G.Olsen software. Doesn't take in account the amino-acid composition of the sequence.
 `./seq2AvgAA.pl` -> Calculates the Amino-acid frequencies from sequences.
@@ -170,10 +170,10 @@ The following scripts generate a series of plots for the observation of codon bi
 G.Olsen -> freq_head.txt / chead.txt
 For codon order -> codOrder.txt, codons.txt, codons2.txt
 
-###_ws variables
+### _ws variables
 If the singletons for the reference genome are available, using _ws variants of scripts, it is posible to incorporate the singletons in the coa and tAI analysis. requires a "singletons*.fa" archive. 
 
-###_t // _dr variables
+### _t // _dr variables
 The _t / -dr is used when the Sij were taken from Sabi 2014 o DosReis papers.
 
 
