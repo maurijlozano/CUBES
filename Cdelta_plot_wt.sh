@@ -13,7 +13,7 @@ echo "
         -h Show this Help
 "
 
-echo -e '\nGenerates a plot of the codon use frequencies vs ancestry for each codon.\n Ws calculated without normalization by the maximum value are calculated and included in the plot (valuses between brackets). The average Sij calculated by Sabi and Tuller 2014 are used.\n\n'
+echo -e '\nGenerates a plot of the codon use frequencies vs ancestry for each codon.\n Ws calculated without normalization by the maximum value are calculated and included in the plot (values between brackets). The average Sij calculated by Sabi and Tuller 2014 are used.\n\n'
 
 exit 1
 }
