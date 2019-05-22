@@ -41,12 +41,12 @@ ls -d */ | while read F; do
     FS=$(echo "${FE}" | sed -e 's/\(^[A-Za-z0-9]*\)[_ ]\(.\)[A-Za-z0-9]*[_ ]\([A-Za-z0-9]*\).*/\1_\2.\3/')
     FN=$(echo "${FS}" | sed -e 's/\///')
 
-    if [[ ! -f "./${F}/"delta-heatmap2.svg ]] ; then
+    if [[ ! -f "./${F}/"delta-heatmap.svg ]] ; then
         echo ':('
         continue
     fi
 
-    svg_stack.py --direction=h --margin=0 fig4.svg "./${F}"delta-heatmap2.svg > fig4a.svg
+    svg_stack.py --direction=h --margin=0 fig4.svg "./${F}"delta-heatmap.svg > fig4a.svg
 	rm fig4.svg
     mv fig4a.svg fig4.svg
 done
