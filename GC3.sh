@@ -7,7 +7,7 @@ SKIP=1
 show_help()
 {
 echo "
-        Usage: Index.sh [-y] [-h]
+        Usage: GC3.sh [-y] [-h]
 
         -y Skips command confirmation
         -h Show this Help
