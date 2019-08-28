@@ -15,7 +15,7 @@ The **pipeline**, is constituted by a set of bash and perl scripts which can be 
 
 ## Installation
 
-For the correct function of the pipeline all the required software (see below) must be installed following the author instructions. For the correct function of the software, all the programs must be included in the linux $PATH.   
+For the correct function of the pipeline all the required software (see below) must be installed following the author instructions. Additionally, all the programs must be included in the linux $PATH.   
 
 ### Requirements
 - The software needs G. Olsen software which can be found in [link](http://www.life.illinois.edu/gary/programs/codon_usage.html). The installation instructions are clearly provided by the author. The software must be in the linux $PATH to work correctly. 
