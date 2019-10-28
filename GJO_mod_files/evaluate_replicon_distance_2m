@@ -1,0 +1,225 @@
+#! /usr/bin/perl
+#
+##############################################################################
+#
+#  Copyright (c) 2009 Gary J. Olsen
+#
+#  This is free software. You can redistributeit and/or modify it under
+#  the terms of the GNU General Public License version 3.
+#
+#  Copies of the license are available from the Free Software Foundation:
+#
+#     http://www.gnu.org/licenses
+#
+##############################################################################
+#
+#   evaluate_replicon_distance_2  [options]  counts1  counts2 ...
+#
+
+use strict;
+use gjocodonlib;
+
+my $usage = <<'End_of_Usage';
+
+For 2 or more gene sets (replicons, organims, ...), calculate difference in
+the modal codon usage for each pair, and the difference in modal usages for
+n_rep (D = 10) bootstrap resamplings of the genes in each set.  Distance
+is the Manhattan metric within an amino acid (sum of absolute difference
+in frequencies) and Euclidian distance among amino acids (square root of the
+sum of the squared differences).  This can be changed with the -t option.
+
+Usage:  evaluate_replicon_distance_2  [options]  counts1  counts2  ...
+
+Options:
+
+    -e expon     #  Exponent of chi-square P-value used in optimizing modal
+                 #     frequencies (D = 0.3)
+    -r n_rep     #  Number of randomizations of genes between sets (D=10)
+    -t type      #  Distance calculation type (D=2):
+                 #     1 = sum of squares of all individual codon differences
+                 #     2 = 1/4 the sum of squares of the sums of absolute
+                 #              differences of codons for each amino acid
+                 #     3 = Manhattan metric (sum of absolute differences)
+    -v vertices  #  Minimum number of vertices in simplex optimization of the
+                 #     modal usage (D = 50).  Only has effect with fewer than
+                 #     vertices genes.  Default seems as good as anything.
+    -T           #  Print an explanation of the distance types and then quit
+
+Output:
+
+    id1 \t id2 \t distance \t stddev_of_dists \t dist1 \t dist2 \t ...
+
+End_of_Usage
+
+my $details = <<'End_of_Details';
+The type 1 distance calculation treats each codon equally.  The difference in
+relative codon usage for each codon is squared, and then summed over codons.
+               ____
+               \ 
+distance1**2 =  |   ( f(1,c) - f(2,c) )**2
+               /___
+             c = codons
+
+where f(n,c) is the frequency of codon c in sequence set n.
+
+The type 2 distance calculation proceeds by amino acid.  For a given amino
+acid, the sum of absolute differenes of codon frequencies is squared, and the
+results are summed over amino acids.
+                   ____             ____
+               1   \                \
+distance2**2 = - *  |            (   |    abs( f(1,c) - f(2,c) ) )**2
+               4   /___             /___
+                 a = amino acids  c = codons for amino acid a
+
+Type 2 distances provide more equal treatment of amino acids with
+different uses of codons.  N.b.,
+----------------------------------------------------------------
+         Codon usage for leucine         Distance**2 for leucine
+       ----------------------------      -----------------------
+       TTA  TTG  TCT  TCC  TCA  TCG        Type 1      Type 2
+----------------------------------------------------------------
+set1    1    0    0    0    0    0            2          1
+set2    0    1    0    0    0    0
+
+set1    1    0    0    0    0    0           6/5         1
+set2    0   1/5  1/5  1/5  1/5  1/5
+
+set1   1/2  1/2   0    0    0    0           3/4         1
+set2    0    0   1/4  1/4  1/4  1/4
+
+set1   1/3  1/3  1/3   0    0    0           2/3         1
+set2    0    0    0   1/3  1/3  1/3
+----------------------------------------------------------------
+Since all of these scenarios have completely difference codon
+usages between the 2 sets, it makes sense that they have the
+same score.
+
+The type 3 distance calculation treats each codon equally, but uses the
+Manhattan metric to combine them:
+               ____
+               \ 
+distance3    =  |   abs( f(1,c) - f(2,c) )
+               /___
+             c = codons
+
+End_of_Details
+
+my $d_type   =  2;
+my $expon    =  0.3;
+my $n_rep    = 10;
+my $vertices = 50;
+
+while ( $ARGV[0] =~ s/^-// )
+{
+    $_ = shift;
+    if ( s/^d// ) { $d_type   = $_ || shift; next }  # Undocumented synonym
+    if ( s/^e// ) { $expon    = $_ || shift; next }
+    if ( s/^n// ) { $n_rep    = $_ || shift; next }  # Undocumented synonym
+    if ( s/^r// ) { $n_rep    = $_ || shift; next }
+    if ( s/^t// ) { $d_type   = $_ || shift; next }
+    if ( s/^v// ) { $vertices = $_ || shift; next }
+
+    if ( s/^T// ) { print STDERR $usage, $details; exit }
+
+    if ( /./ )
+    {
+        print STDERR "Bad flag '$_'\n", $usage;
+        exit;
+    }
+}
+
+if ( $vertices < 50 )
+{
+    print STDERR "WARNING: Minimum number of vertices reset from $vertices to 50.\n";
+    $vertices = 50;
+}
+
+my $n_top = ( $vertices > 100 ) ? $vertices : 100;
+
+my $file;
+my @counts;
+my @names;
+
+foreach $file ( @ARGV )
+{
+    -f $file
+        or ( -f "$file.counts" and $file .= '.counts' )
+        or print STDERR "Invalid gene count file: '$file'\n$usage"
+           and exit;
+    push @counts, [ map { chomp; scalar split_counts( $_ ) } `cat $file` ];
+    @{ $counts[-1] }
+        or print STDERR "Failed to read codon counts from '$file'.\n", $usage
+           and exit;
+    my $name = $file;
+    $name =~ s/\.[^.]*$//;
+    push @names, $name;
+}
+
+#  Temporary files for mode calculations:
+
+my $root_name = 'eval_replicon_dist_temp_' . sprintf('%09d', int(1e9*rand()) );
+my $options   = { expon    => $expon,
+                  n_top    => $n_top,
+                  root     => $root_name,
+                  vertices => $vertices
+                };
+
+my @freq_sets;
+my $i1;
+for ( $i1 = 0; $i1 < @counts; $i1++ )
+{
+    my @counts1 = @{ $counts[ $i1 ] };
+    my $n_cnt = @counts1;
+print STDERR "$n_cnt\n";
+    my @freq_set;
+print STDERR "0\n";
+    my @modal_freqs = modal_codon_usage( \@counts1, $options );
+    push @freq_set, $modal_freqs[1];
+    foreach ( ( 1 .. $n_rep ) )
+    {
+print STDERR "$_\n";
+        my @boot = map { $counts1[ int( $n_cnt * rand() ) ] } @counts1;
+        my @modal_freqs_boot = modal_codon_usage( \@boot, $options );
+        push @freq_set, $modal_freqs_boot[1];
+    }
+    push @freq_sets, \@freq_set;
+}
+
+for ( $i1 = 0; $i1 < @counts; $i1++ )
+{
+    my $name1  = $names[$i1];
+    my $freqs1 = $freq_sets[$i1];
+    my $i2;
+    for ( $i2 = $i1 + 1; $i2 < @counts; $i2++ )
+    {
+        my $name2  = $names[$i2];
+        my $freqs2 = $freq_sets[$i2];
+        my @dists;
+
+        foreach ( ( 0 .. $n_rep ) )
+        {
+	    push @dists, distance( $freqs1->[$_], $freqs2->[$_], $d_type );
+        }
+
+        my $dist = shift @dists;
+        my $ttl  = 0;
+        my $ttl2 = 0;
+        foreach ( @dists ) { $ttl += $_; $ttl2 += $_**2 }
+        my $n      = @dists;
+        my $mean   = $n     ? $ttl / $n : 0;
+        my $stddev = $n > 1 ? sqrt ( ( $ttl2 - $n * $mean**2 ) / ( $n - 1 ) ) : 0;
+        print join( "\t", $name1, $name2, map { sprintf '%0.4f', $_ } $dist, $stddev, @dists ), "\n";
+    }
+}
+
+exit;
+
+sub distance
+{
+    my ( $f1, $f2, $d_type ) = @_;
+
+    ( $d_type == 2 ) ? gjocodonlib::codon_freq_distance_2( $f1, $f2 ) :
+    ( $d_type == 3 ) ? gjocodonlib::codon_freq_distance_3( $f1, $f2 ) :
+                       gjocodonlib::codon_freq_distance_1( $f1, $f2 )
+}
+

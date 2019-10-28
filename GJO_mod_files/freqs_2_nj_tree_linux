@@ -1,0 +1,165 @@
+#! /usr/bin/perl -w
+#
+#  freqs_2_nj_tree [options] < freqs_file  > newick_tree
+#
+#  Distance is Manhatten metric within amino acid, and Euclidian
+#  between amino acids. The tree is a newick tree with the neighbor program.
+#
+#  This should use a temporary subdirectory, but for now ...
+#
+
+use strict;
+use gjocodonlib;
+use gjonewicklib;
+
+sub usage
+{
+    print STDERR <<'End_of_usage';
+freqs_2_nj_tree -
+
+Construct a neighbor-joining tree of codon usage frequencies (supplied as
+input).  The output is a tree in the Newick's 8:45 standard.  The distance
+is Manhatten metric within amino acid, and Euclidian between amino acids.
+
+This program requires that the neighbor program from the PHYLIP package be
+installed and accessible throught the current "path".
+
+Usage: freqs_2_nj_tree [options] < freqs_file  > newick_tree
+
+Options:
+
+   -a   # Aesthetic tree order of tips in output tree
+   -c   # Clobber infile, outfile and outtree files if they exisit
+   -m   # Midpoint root the output tree
+
+End_of_usage
+
+    exit;
+}
+
+my $aesthetic = 0;
+my $clobber   = 0;
+my $midpoint  = 0;
+
+while ( @ARGV && $ARGV[0] =~ s/^-// )
+{
+    local $_ = shift;
+    if ( s/a//g ) { $aesthetic = 1 }
+    if ( s/c//g ) { $clobber   = 1 }
+    if ( s/m//g ) { $midpoint  = 1 }
+    if ( m/./ ) { print STDERR "Bad flag: '$_'.\n"; usage() }
+}
+
+if ( $clobber )
+{
+    unlink 'infile'  if -f 'infile';
+    unlink 'outfile' if -f 'outfile';
+    unlink 'outtree' if -f 'outtree';
+}
+else
+{
+    my @found = ();
+    push @found, 'infile'  if -f 'infile';
+    push @found, 'outfile' if -f 'outfile';
+    push @found, 'outtree' if -f 'outtree';
+    if ( @found )
+    {
+        print STDERR "The following files conflict with this program:\n";
+        foreach ( @found ) { print STDERR "    $_\n" }
+        print STDERR "Either remove them, or use the -c flag.\n";
+        usage();
+    }
+}
+
+my $i = '00000';
+my @freqs;
+my %labels;
+
+while ( <> )
+{
+    chomp;
+    s/\s+$//;
+    my @f = split /\t/;
+    shift @f if $f[0] !~ /,/;  # Remove score if present
+    next if $f[0] !~ /,/;      # No frequencies
+    $i++;
+    my $lbl1 = $f[1] || "otu$i";
+    my $lbl2 = valid_label( $lbl1, \%labels, "otu$i" );
+    $labels{ $lbl2 } = $lbl1;
+    push @freqs, [ split_freq( $f[0] ), $lbl2 ];
+}
+
+@freqs > 2
+    or print STDERR "Less than two sets of codon usage frequencies read.\n"
+       and usage();
+
+open INFILE, '>infile'
+    or print STDERR "Could not open 'infile' for writing.\n"
+       and exit;
+print INFILE $i+0 . "\n";
+for ( my $f1 = 0; $f1 < @freqs; $f1++ )
+{
+    my $freqs1 = $freqs[$f1]->[0];
+    my @line = sprintf "%-10s  ", $freqs[$f1]->[1];
+    for ( my $f2 = 0; $f2 < @freqs; $f2++ )
+    {
+        #
+        #  codon_freq_distance_2 is Manhatten metric within amino acid, and
+        #  Euclidian between amino acids.
+        #
+        push @line, sprintf( "%.4f", gjocodonlib::codon_freq_distance_2( $freqs1, $freqs[$f2]->[0] ) );
+    }
+    print INFILE join( ' ', @line), "\n";
+}
+close INFILE;
+
+#  Beware: neighbor writes to stdout, so this will contaminate the output of
+#  this script unless it redirected.
+
+system( 'echo "y" | phylip neighbor' );
+
+-f 'outtree'
+    or print STDERR "Could not find outtree for reading.\n"
+       and exit;
+my $tree = gjonewicklib::read_newick_tree( 'outtree' );
+$tree or print STDERR "Could not find outtree for reading.\n"
+         and exit;
+unlink( 'infile', 'outfile', 'outtree' );
+
+$tree = gjonewicklib::newick_relabel_nodes( $tree, \%labels );
+$tree = gjonewicklib::reroot_newick_to_midpoint_w( $tree ) if $midpoint;
+$tree = gjonewicklib::aesthetic_newick_tree( $tree )       if $aesthetic;
+
+gjonewicklib::writeNewickTree( $tree );
+# gjonewicklib::printer_plot_newick( $tree );
+
+exit;
+
+
+sub valid_label
+{
+    my ( $lbl1, $labels, $dflt, $save ) = @_;
+
+    my $lbl2 = $save                 ? $dflt
+             : length( $lbl1 ) <= 10 ? $lbl1
+             :                         substr( $lbl1, 0, 10 );
+    my $j = 1;
+    my $tmp = $lbl2;
+    while ( $labels->{ $lbl2 } )
+    {
+        my $maxl = 9 - length( $j );
+        $tmp = substr( $tmp, 0, $maxl ) if length( $tmp ) > $maxl;
+        $lbl2 = "$tmp.$j";
+        $j++;
+    }
+    return $lbl2;
+}
+
+
+#  Split frequences with amino acids separated by vertical bars, and
+#  codons within the amino acid separated by commas:
+#
+#  fc1aa1,fc2aa1,fc3aa1,fc4aa1|fc1aa2,fc2aa2,...|fc1aa3,fc2aa3,...
+
+sub split_freq { [ map { [ map { $_ + 0 } split /,/ ] } split /\|/, shift ] }
+
