@@ -18,10 +18,16 @@ The **pipeline**, is constituted by a set of bash and perl scripts which can be 
 For the correct function of the pipeline all the required software (see below) must be installed following the author instructions. Additionally, all the programs must be included in the linux $PATH.   
 
 ### Requirements
-- The software needs G. Olsen software which can be found in [link](http://www.life.illinois.edu/gary/programs/codon_usage.html). The installation instructions are clearly provided by the author. The software must be in the linux $PATH to work correctly. 
+- The software needs G. Olsen software which can be found in [link](http://www.life.illinois.edu/gary/programs/codon_usage.html). The installation instructions are clearly provided by the author. The software must be in the linux $PATH to work correctly. Some of the G. Olsen libraries required minor modifications to run without error on ubuntu. (gjocodonlib.pm: on line 1495 ncpu was replaced by nproc; additionally, on freqs_2_nj_tree_linux, line 119 was replaced by system( 'echo "y" | phylip neighbor' );). Modified files are provided with the software.
 - a local installation of [codonw](http://codonw.sourceforge.net/).
 - [phylip](http://evolution.genetics.washington.edu/phylip.html) package for the tRNA tree generation.
-- [R-project] (https://www.r-project.org/) software with the following libraries: stringr, ggplot2, ggrepel, ggthemes, ggpmisc, data.table, tidyr, ggpubr, pheatmap, ape, tAI, doParallel, ade4. 
+- [R-project] (https://www.r-project.org/) software with the following libraries: stringr, ggplot2, ggrepel, ggthemes, ggpmisc, data.table, tidyr, ggpubr, pheatmap, ape, devtools, tAI, doParallel, ade4.
+- For tAI package installation follow author instructions on [tAI](https://github.com/mariodosreis/tai) github page.
+- For the installation of the required R packages, some dependencies may be required.
+  - From the linux repository install (for ubuntu):
+    `sudo apt install libudunits2-dev libgdal-dev libssl-dev libmagick++-dev`
+  - Additional R packages that might be required: httr, gh, usethis, magick, animation
+- Svg_stack python script should be also in the $PATH. Download from [svg_stack](https://github.com/astraw/svg_stack)
 
 ## Running the pipeline - General comments
 The scripts are programmed to scan for a set of files for each bacteria. These files must be located on a folder within the installation path. An example of the correct folder architecture is shown below: 
