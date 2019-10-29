@@ -3,14 +3,14 @@
 
 **Codon Usage Bias Evolutionary Scripts** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core-genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core-genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of more distantly related genomes -following the phylogeny of the family/genus- to the analysis. Next, these Cn gene sets are used to calculate the modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and to perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
 
-The **pipeline**, is constituted by a set of bash and perl scripts which can be used to:
+CUBES is **pipeline** constituted by a set of bash and perl scripts which can be used to:
 
-1. calculate modal codon usage frequencies for a set of genes (eg. from a core genome obtained from [Edgar sofftware](https://edgar.computational.bio.uni-giessen.de)) using [G. Olsen Software](http://www.life.illinois.edu/gary/programs/codon_usage.html)
-2. generate a representative DNA sequences for those modal frequencies 
-3. calculate the correspondence analysis of RSCU using [CodonW software](http://codonw.sourceforge.net/). At this point, the pipeline generates plots of the first 2 components of COA, both for genes and codons, including the modal sequences
-4. calculate the adaptation index s-tAI and the GC3 content, using RGF (eg. relative content of tRNA genes for each amino-acid) and the evolutionary distance between core genomes (which can be obtained from Edgar software), which must be supplied by the user. As a result, the script outputs tables and plots showing the variation of these indexes in function of the evolutionary distance. 
-5. generate a distance tree based on the tRNA gene content (which must be supplied, e.g from [GtRNAdb](http://gtrnadb.ucsc.edu/) data base) as in [Novoa *et al.* 2012](https://doi.org/10.1016/j.cell.2012.01.050) 
-6. Finally, two plots are created. One showing the change in the codon use frequencies (CUF) for each codon and the corresponding *w*, and the other, a heatmap of the difference in CUF between: a.the initial and the most ancestral core-genomes, b. the initial core-genome and the putatively highly expressed genes (PHE).
+1. calculate modal codon usage frequencies for a set of genes (e.g. from a core genome obtained from [Edgar software](https://edgar.computational.bio.uni-giessen.de)) using [G. Olsen Software](http://www.life.illinois.edu/gary/programs/codon_usage.html)
+2. generate representative DNA sequences for the calcualted modal frequencies (Since the codon usage analysis will be done using codonW which requires coding sequences)
+3. calculate the correspondence analysis of RSCU using [CodonW software](http://codonw.sourceforge.net/). At this point, the pipeline generates plots of the first 2 components of COA, both for genes and codons, including the modal sequences for the core-genomes, singletons and putatively highly expressed proteins.
+4. calculate the adaptation index s-tAI and the GC3 content, using RGF (i.e. relative content of tRNA genes for each amino-acid) and the evolutionary distance between core-genomes (which can be obtained from Edgar software), which must be supplied by the user. As a result, the script outputs tables and plots showing the variation of these indices in function of the evolutionary distance. 
+5. generate a distance tree based on the tRNA gene content (which must be supplied, e.g. from [GtRNAdb](http://gtrnadb.ucsc.edu/) data base) as in [Novoa *et al.* 2012](https://doi.org/10.1016/j.cell.2012.01.050) 
+6. Finally, two plots are created. One showing the change in the codon use frequencies (CUF) for each codon and the corresponding *w*, and the other, a heatmap of the difference in CUF between: a. the initial and the most ancestral core-genomes, b. the initial core-genome and the putatively highly expressed genes (PHE).
 ----------
 
 ## Installation
@@ -20,7 +20,7 @@ For the correct function of the pipeline all the required software (see below) m
 ### Requirements
 - The software needs G. Olsen software which can be found in [link](http://www.life.illinois.edu/gary/programs/codon_usage.html). The installation instructions are clearly provided by the author. The software must be in the linux $PATH to work correctly. Some of the G. Olsen libraries required minor modifications to run without error on ubuntu. (gjocodonlib.pm: on line 1495 ncpu was replaced by nproc; additionally, on freqs_2_nj_tree_linux, line 119 was replaced by system( 'echo "y" | phylip neighbor' );). Modified files are provided with the software.
 - a local installation of [codonw](http://codonw.sourceforge.net/).
-- [phylip](http://evolution.genetics.washington.edu/phylip.html) package for the tRNA tree generation.
+- [phylip](http://evolution.genetics.washington.edu/phylip.html) package for the tRNA tree generation (can be installed from linux repository. ~$sudo apt install phylip).
 - [R-project] (https://www.r-project.org/) software with the following libraries: stringr, ggplot2, ggrepel, ggthemes, ggpmisc, data.table, tidyr, ggpubr, pheatmap, ape, devtools, tAI, doParallel, ade4.
 - For tAI package installation follow author instructions on [tAI](https://github.com/mariodosreis/tai) github page.
 - For the installation of the required R packages, some dependencies may be required.
