@@ -1,7 +1,7 @@
 # CUBES
 <!--Version Nov. 15th, 2018.-->
 
-**Codon Usage Bias Evolutionary Scripts** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of new genomes to the analysis following the phylogeny of the family/genus. Next, these Cn gene sets are used to calculate modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
+**Codon Usage Bias Evolutionary Scripts** is a software package designed to study the evolutionary traits of codon bias. To that end, a set of progressively ancestral core-genomes must first be obtained using for example [Edgar](https://edgar.computational.bio.uni-giessen.de) or [Get-Homologues](https://github.com/eead-csic-compbio/get_homologues) software. The core-genome sets (e.g. C1 -> Cn) are constructed by the successive incorporation of more distantly related genomes -following the phylogeny of the family/genus- to the analysis. Next, these Cn gene sets are used to calculate the modal codon use frequencies (for each set), the relative synonymous codon use (RSCU, for each gene), and to perform a Correspondence analysis. Additionally, tools to analyse the evolutionary traits of codon bias are provided.
 
 The **pipeline**, is constituted by a set of bash and perl scripts which can be used to:
 
@@ -10,7 +10,7 @@ The **pipeline**, is constituted by a set of bash and perl scripts which can be 
 3. calculate the correspondence analysis of RSCU using [CodonW software](http://codonw.sourceforge.net/). At this point, the pipeline generates plots of the first 2 components of COA, both for genes and codons, including the modal sequences
 4. calculate the adaptation index s-tAI and the GC3 content, using RGF (eg. relative content of tRNA genes for each amino-acid) and the evolutionary distance between core genomes (which can be obtained from Edgar software), which must be supplied by the user. As a result, the script outputs tables and plots showing the variation of these indexes in function of the evolutionary distance. 
 5. generate a distance tree based on the tRNA gene content (which must be supplied, e.g from [GtRNAdb](http://gtrnadb.ucsc.edu/) data base) as in [Novoa *et al.* 2012](https://doi.org/10.1016/j.cell.2012.01.050) 
-6. Finally, two plots, one showing the change in the codon use frequencies (CUF) for each codon and the corresponding *w*, and the other, a histogram of the difference in CUF for the initial and the most ancestral cores and the putatively highly expressed genes (PHE) is created.
+6. Finally, two plots are created. One showing the change in the codon use frequencies (CUF) for each codon and the corresponding *w*, and the other, a heatmap of the difference in CUF between: a.the initial and the most ancestral core-genomes, b. the initial core-genome and the putatively highly expressed genes (PHE).
 ----------
 
 ## Installation
