@@ -138,13 +138,15 @@ Requires:
 ### Heatmaps of codon usage from Ci->Cj->PHE and plots of frequencies of codon use vs evolutionary distance.
 The following scripts generate a series of plots for the observation of codon bias changes with evolutionary distance, for each codon.
 
-`./Cdelta_Heatmap2.sh` -> Heatmap of relative adaptiveness values (ws) and Delta C1->n.
+`./Cdelta_Heatmap2.sh` -> Generates a heatmap of relative adaptiveness values (ws), and of the difference of CUF between C1 and Cn, and between Cn and PHE (ΔCn-C1 and ΔPHE-Cn respectively). Allows the easy visualization of CUF changes from C1 to Cn and if there is further adaptation from Cn to PHE.
 
 `./Cdelta_Heatmap2t.sh` -> The same as before, but with *Sij* taken from Sabi *et al.* 2014.
 
 `./Cdelta_Heatmap2_U.sh` -> The same as the first, but tAi values are calculated taking in account U:U wobble base interaction.	
 
 `./Cdelta_plot.sh` -> Generates a plot showing the evolution of the frequency of synonymous codon use from C1 to Cn, for every codon. Bars represents the tRNA copy number. Between brackets is the ws (calculated without the normalization by the maximum value)
+
+`./Cdelta_plot_F3.sh` -> Heatmap of relative adaptiveness values (ws) and Delta C1->n. Wiht PHE, Singletons and color codes. Use to generate a figure like the one on Lopez et al. (not publish yet...)
 
 `./Cdelta_plot_ws.sh` -> The same as Cdelta_plot.sh, but includes as first point the singletons.
 
