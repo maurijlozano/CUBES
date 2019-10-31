@@ -21,15 +21,14 @@ while getopts yh option; do
 done
 
 ./calculate_modals2.sh -y
-./coa_ws.sh -y
+./coa_GNM.sh -y
 ./make_paper_fig1.sh -y
 ./GC3_Modal.sh -y
-./calculate_sopt_DCBS_GNM2_f.sh -y -i 100
-./tAi_Modal_g2.sh -y
+./calculate_sopt_DCBS_GNM_f.sh -y -i 100
+./tAi_Modal_g.sh -y
 ./make_paper_fig2.sh -y
-./calculate_tRNA_dist.sh -y
-./Cdelta_plot2.sh -y
-./Cdelta_heatmap2_2.sh -y
+./Cdelta_plot_F3.sh -y
+./Cdelta_heatmap2.sh -y
 ./make_paper_fig4.sh -y
 
 echo 'Done!!!'
