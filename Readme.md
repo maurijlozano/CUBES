@@ -7,7 +7,7 @@ CUBES is **pipeline** constituted by a set of bash and perl scripts which can be
 
 1. calculate modal codon usage frequencies for a set of genes (e.g. from a core genome obtained from [Edgar software](https://edgar.computational.bio.uni-giessen.de)) using [G. Olsen Software](http://www.life.illinois.edu/gary/programs/codon_usage.html)
 2. generate representative DNA sequences for the calcualted modal frequencies (Since the codon usage analysis will be done using codonW which requires coding sequences)
-3. calculate the correspondence analysis of RSCU using [CodonW software](http://codonw.sourceforge.net/). At this point, the pipeline generates plots of the first 2 components of COA, both for genes and codons, including the modal sequences for the core-genomes, singletons and putatively highly expressed proteins.
+3. calculate the correspondence analysis of RSCU using [CodonW software](http://codonw.sourceforge.net/). At this point, the pipeline generates plots of the first 2 components of COA, both for genes and codons, including the modal sequences for the core-genomes, singletons and putatively highly expressed proteins. Additionally, scripts to calculate CA of RSCU and raw codon counts using only R software are provided. 
 4. calculate the adaptation index s-tAI and the GC3 content, using RGF (i.e. relative content of tRNA genes for each amino-acid) and the evolutionary distance between core-genomes (which can be obtained from Edgar software), which must be supplied by the user. As a result, the script outputs tables and plots showing the variation of these indices in function of the evolutionary distance. 
 5. generate a distance tree based on the tRNA gene content (which must be supplied, e.g. from [GtRNAdb](http://gtrnadb.ucsc.edu/) data base) as in [Novoa *et al.* 2012](https://doi.org/10.1016/j.cell.2012.01.050) 
 6. Finally, two plots are created. One showing the change in the codon use frequencies (CUF) for each codon and the corresponding *w*, and the other, a heatmap of the difference in CUF between: a. the initial and the most ancestral core-genomes, b. the initial core-genome and the putatively highly expressed genes (PHE).
@@ -28,6 +28,7 @@ For the correct function of the pipeline all the required software (see below) m
     `sudo apt install libudunits2-dev libgdal-dev libssl-dev libmagick++-dev`
   - Additional R packages that might be required: httr, gh, usethis, magick, animation
 - Svg_stack python script should be also in the $PATH. Download from [svg_stack](https://github.com/astraw/svg_stack)
+- For CA analysis analysis using R, additional packages are required: gtools, Factoextra and FactoMiner.
 
 ## Running the pipeline - General comments
 The scripts are programmed to scan for a set of files for each bacteria. These files must be located on a folder within the installation path. An example of the correct folder architecture is shown below: 
@@ -57,7 +58,13 @@ To run the first analysis use the following scripts:
   
 `./calculate_modals2.sh` -> calculates modal codon use frequencies using G.Olsen software, and generates a representative DNA sequence  (uses seq2AvgAA.pl and modal2seq2.pl perl scripts).
   
-`./coa_GNM.sh` -> Calculates CA on RSCU, using CodonW software, and generates several plots in R. Requires single*.fa file, containing singleton gene CDS, and GNM.fa (complete genome CDS). Additionally, CA Axis are reoriented in the C1-Cn direction.
+`./coa_GNM.sh` -> Calculates CA on RSCU, using CodonW software, and generates several plots in R. Requires single*.fa file, containing singleton gene CDS, and GNM.fa (complete genome CDS). Additionally, CA Axis are reoriented in the C1-Cn direction.  
+  
+The following scripts require trna.txt (see below) and modal sequences calculated with calculate_modals2.sh.  
+
+`coa_CCounts_GNM.sh`->  Calculates CA on raw codon counts using G. Olsen codon count script and R software. Generates genes and codon plots. On the codons plot, only the codons which present the most significant increase in usage from C1 to PHE are labeled and colored.  
+`coa_GNM_R.sh` -> Calculates CA on RSCU using seq2rscu.pl script and R software. Generates genes and codon plots. Codons are labeled and ploted as with coa_CCounts_GNM.sh.  
+`coa_GNM_rv.sh`-> Similar to coa_GNM.sh but with some corrections and plot improvements. Codons are labeled and ploted as with coa_CCounts_GNM.sh.  
 
 #### Additional scripts
 `./calculate_modals.sh` -> calculates modal codon use frequencies using G.Olsen software, and generates a representative DNA sequence  (uses seq2AvgAA.pl and modal2seq2.pl perl scripts). This script doesn't take account of amino-acid composition.
