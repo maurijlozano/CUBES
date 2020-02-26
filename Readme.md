@@ -46,7 +46,7 @@ The folder for each bacterial family must contain:
 - PHE.fa, putatively highly expressed genes (as defined by Lopez JL. *et al.*)
 - dist.txt, which contain the distance between the species, extracted from the species phylogenetic tree. 
 - rgf.txt (only needed for I, index calculation), is a file containing a normalized frequency based on the number of tRNAs for each codon/amino-acid. The order of the *codons* must follow the example file provided.
-- trna.txt, the number of copies of tRNA. Can be obtained from [GtRNAdb](http://gtrnadb.ucsc.edu/). The order of the *codons* must follow the example file provided.
+- trna.txt, the number of copies of tRNA. Can be obtained from [GtRNAdb](http://gtrnadb.ucsc.edu/). The order of the *codons* must follow the example file provided. Numbers should be integers.
 
 ## Running the scripts in the correct order
 The pipeline contains scripts which generate files that can be required on following steps. It is therefore recommended to run the scripts in order.
