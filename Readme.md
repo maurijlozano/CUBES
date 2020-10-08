@@ -15,7 +15,7 @@ CUBES is **pipeline** constituted by a set of bash and perl scripts which can be
 
 ## Installation
 
-For the correct function of the pipeline all the required software (see below) must be installed following the author instructions. Additionally, all the programs must be included in the linux $PATH.   
+For the correct function of the pipeline all the required software (see below) must be installed following the author instructions. Additionally, all the programs must be included in the linux $PATH. (Edit .bashrc file and add or modify the following line: 'export PATH=$PATH:/paht_1:/path_2:/...:/path_n'  where path_i is the folder you want to add to the PATH variable.
 
 ### Requirements
 - The software needs G. Olsen software which can be found in [link](http://www.life.illinois.edu/gary/programs/codon_usage.html). The installation instructions are clearly provided by the author. The software must be in the linux $PATH to work correctly. Some of the G. Olsen libraries required minor modifications to run without error on ubuntu. (gjocodonlib.pm: on line 1495 ncpu was replaced by nproc; additionally, on freqs_2_nj_tree_linux, line 119 was replaced by system( 'echo "y" | phylip neighbor' );). Modified files are provided with the software.
