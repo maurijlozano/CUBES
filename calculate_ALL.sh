@@ -27,8 +27,8 @@ done
 ./calculate_sopt_DCBS_GNM_f.sh -y -i 100
 ./tAi_Modal_g.sh -y
 ./make_paper_fig2.sh -y
-./Cdelta_plot_F3.sh -y
-./Cdelta_heatmap2.sh -y
+./Cdelta_plot_F3.sh
+./Cdelta_heatmap2.sh
 ./make_paper_fig4.sh -y
 
 echo 'Done!!!'
