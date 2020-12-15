@@ -42,7 +42,7 @@ ls -d */ | while read F; do
     FN=$(echo "${FS}" | sed -e 's/\///')
 
     if [[ ! -f "./${F}/"delta-heatmap.svg ]] ; then
-        echo ':('
+        echo ':( Some required files -delta-heatmap.svg- are missing. '
         continue
     fi
 
