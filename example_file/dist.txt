@@ -1,0 +1,6 @@
+CoreName  Dist
+C1  1,2
+C2  2,3
+..
+..
+Cn  5,3
