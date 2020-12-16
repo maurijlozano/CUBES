@@ -44,7 +44,7 @@ The scripts are programmed to scan for a set of files for each bacteria. These f
 The folder for each bacterial family must contain: 
 - multifasta files named C(n).fa (for Core genomes), single*.fa (for singletons), GNM.fa (complete genome) each containing the CDS of a coregenome/singletons constructed by sequentially adding a more distant genome as in Lopez JL. *et al.* The sets of C genes for the analysis can be obtained using tools such as [EDGAR](https://edgar.computational.bio.uni-giessen.de/cgi-bin/edgar_login.cgi) or [Get_Homologues/Get_Phylomarkers](https://github.com/vinuesa).
 - PHE.fa, putatively highly expressed genes (as defined by Lopez JL. *et al.*)
-- dist.txt, which contain the distance between the species, extracted from the species phylogenetic tree. 
+- dist.txt, which contain the distance between the species, extracted from the species phylogenetic tree. This file must contain two tab separated columns, with headers CoreName and Dist. The Dist column requires ',' separated decimals (Sorry about that...)
 - rgf.txt (only needed for I, index calculation), is a file containing a normalized frequency based on the number of tRNAs for each codon/amino-acid. The order of the *codons* must follow the example file provided.
 - trna.txt, the number of copies of tRNA. Can be obtained from [GtRNAdb](http://gtrnadb.ucsc.edu/). The order of the *codons* must follow the example file provided. Numbers should be integers.
 
